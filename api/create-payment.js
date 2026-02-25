@@ -20,7 +20,12 @@ const DEFAULT_PRICES = {
 };
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN || "*");
+  // Allow production domain + localhost for testing
+  const origin = req.headers.origin || "";
+  const allowed = ["https://jadwa.tech", "https://www.jadwa.tech", "https://jadwa-beta.vercel.app"];
+  const isAllowed = allowed.includes(origin) || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1");
+  res.setHeader("Access-Control-Allow-Origin", isAllowed ? origin : "https://jadwa.tech");
+  res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
